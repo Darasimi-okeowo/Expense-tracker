@@ -4,12 +4,7 @@ import AppReducer from "./AppReducer"; // Import AppReducer from the separate fi
 
 // Initial State
 const initialState = {
-  transactions: [
-    { id: 1, text: "Flower", amount: -20 },
-    { id: 2, text: "Salary", amount: 300 },
-    { id: 3, text: "Book", amount: -10 },
-    { id: 4, text: "Camera", amount: 150 },
-  ],
+  transactions: [],
 };
 
 // Create Context
@@ -19,9 +14,41 @@ export const GlobalContext = createContext(initialState);
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
+  // // Load transactions from local storage on component mount
+  // useEffect(() => {
+  //   const storedTransactions = JSON.parse(localStorage.getItem("transactions"));
+  //   if (storedTransactions) {
+  //     dispatch({ type: "LOAD_TRANSACTIONS", payload: storedTransactions });
+  //   }
+  // }, []);
+
+  // // Save transactions to local storage whenever they change
+  // useEffect(() => {
+  //   localStorage.setItem("transactions", JSON.stringify(state.transactions));
+  // }, [state.transactions]);
+
+  //deleteTransactions Action
+  function deleteTransaction(id) {
+    dispatch({
+      type: "DELETE_TRANSACTION",
+      payload: id,
+    });
+  }
+  //addTransactions Action
+  function addTransaction(transaction) {
+    dispatch({
+      type: "ADD_TRANSACTION",
+      payload: transaction,
+    });
+  }
+
   return (
     <GlobalContext.Provider
-      value={{ transactions: state.transactions, dispatch }}
+      value={{
+        transactions: state.transactions,
+        deleteTransaction,
+        addTransaction,
+      }}
     >
       {children}
     </GlobalContext.Provider>

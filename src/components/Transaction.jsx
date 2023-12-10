@@ -1,6 +1,11 @@
 import PropTypes from "prop-types";
-const Transaction = ({ transaction: { text, amount } }) => {
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalState";
+
+const Transaction = ({ transaction: { id, text, amount } }) => {
+  const { deleteTransaction } = useContext(GlobalContext);
   const sign = amount < 0 ? "-" : "+";
+
   return (
     <>
       <li className={amount < 0 ? "minus" : "plus"}>
@@ -8,7 +13,9 @@ const Transaction = ({ transaction: { text, amount } }) => {
         <span>
           {sign}${Math.abs(amount)}
         </span>
-        <button className="delete-btn">x</button>
+        <button onClick={() => deleteTransaction(id)} className="delete-btn">
+          x
+        </button>
       </li>
     </>
   );
@@ -16,6 +23,7 @@ const Transaction = ({ transaction: { text, amount } }) => {
 
 Transaction.propTypes = {
   transaction: PropTypes.shape({
+    id: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
     amount: PropTypes.number.isRequired,
   }).isRequired,
